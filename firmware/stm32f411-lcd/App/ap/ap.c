@@ -1,45 +1,54 @@
 #include "ap.h"
 
 
+static void btn_event_cb(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * btn = lv_event_get_target(e);
+    if(code == LV_EVENT_CLICKED) {
+        static uint8_t cnt = 0;
+        cnt++;
 
+        /*Get the first child of the button which is the label and change its text*/
+        lv_obj_t * label = lv_obj_get_child(btn, 0);
+        lv_label_set_text_fmt(label, "Button: %d", cnt);
+    }
+}
+
+/**
+ * Create a button with a label and react on click event.
+ */
+void lv_example_get_started_2(void)
+{
+    lv_obj_t * btn = lv_button_create(lv_screen_active());     /*Add a button the current screen*/
+    lv_obj_center(btn);                            /*Set its position*/
+    lv_obj_set_size(btn, 120, 50);                          /*Set its size*/
+    lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);           /*Assign a callback to the button*/
+
+    lv_obj_t * label = lv_label_create(btn);          /*Add a label to the button*/
+    lv_label_set_text(label, "Button");                     /*Set the labels text*/
+    lv_obj_center(label);
+}
 
 void apInit(void)
 {
   cliOpen(_DEF_UART1, 115200);
   cliLogo();
+
+  lvglInit();
 }
 
 
 void apMain(void)
 {
-  typedef struct
-  {
-    bool is_enable;
-    uint16_t color;
-    int16_t x;
-    int16_t y;
-    int16_t size;
-    int16_t speed;
-  } bomb_info_t;
-
-  uint32_t pre_time = 0;
-  int16_t block_x = 0;
-  int16_t block_y = 0;
-  int16_t block_size = 20;
-  uint16_t block_speed = 4;
-  uint32_t pre_time_buzzer;
+  uint32_t pre_time;
 
 
-  bomb_info_t bomb[10];
+  lv_example_get_started_2();
 
-
-  for (int i=0; i<10; i++)
-  {
-    bomb[i].is_enable = false;
-  }
-
+  pre_time = millis();
   while(1)
-  {
+  {  
     if (millis() - pre_time >= 500)
     {
       pre_time = millis();
@@ -47,99 +56,6 @@ void apMain(void)
 
     }
     cliMain();
-
-    if (lcdDrawAvailable())
-    {
-      static uint32_t pre_time_draw;
-      static uint32_t exe_time_draw;
-
-
-      pre_time_draw = millis();
-
-      lcdClearBuffer(black);
-      exe_time_draw = millis() - pre_time_draw;
-
-      lcdDrawFillRect(block_x, block_y, block_size, block_size, green);
-
-      lcdPrintf(5, 5, white, "테스트");
-      lcdPrintf(5, 25, white, "%d ms", exe_time_draw);
-      lcdPrintf(5, 45, white, "%d ms", lcdGetDrawTime());
-      lcdPrintf(150, 5, white, "X %d", adcRead(0));
-      lcdPrintf(150, 25, white, "Y %d", adcRead(1));
-
-      for (int i=0; i<BUTTON_MAX_CH; i++)
-      {
-        lcdPrintf(5+16*i, 65, white, "%d", buttonGetPressed(i));
-      }
-
-      lcdDrawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, white);
-
-      if (adcRead(0) < 1500)
-      {
-        block_x = constrain((block_x - block_speed), 0, LCD_WIDTH);
-      }
-      if (adcRead(0) > 2500)
-      {
-        block_x = constrain((block_x + block_speed), 0, LCD_WIDTH);
-      }
-      if (adcRead(1) > 2500)
-      {
-        block_y = constrain((block_y - block_speed), 0, LCD_HEIGHT);
-      }
-      if (adcRead(1) < 1500)
-      {
-        block_y = constrain((block_y + block_speed), 0, LCD_HEIGHT);
-      }
-
-
-      for (int i=0; i<10; i++)
-      {
-        if (bomb[i].is_enable)
-        {
-          bomb[i].x += bomb[i].speed;
-          if (bomb[i].x > LCD_WIDTH)
-          {
-            bomb[i].is_enable = false;
-          }
-          lcdDrawFillRect(bomb[i].x, bomb[i].y, bomb[i].size, bomb[i].size, bomb[i].color);
-          lcdPrintf(bomb[i].x+2, bomb[i].y+2, white, "%d", i);
-        }
-      }
-
-
-      lcdRequestDraw();
-    }
-
-    if (buttonGetPressed(2) || buttonGetPressed(3))
-    {
-      if (millis()-pre_time_buzzer >= 200)
-      {
-        buzzerOn(1000, 100);
-        pre_time_buzzer = millis();
-
-        for (int i=0; i<10; i++)
-        {
-          if (!bomb[i].is_enable)
-          {
-            bomb[i].is_enable = true;
-            bomb[i].y = block_y;
-            bomb[i].x = block_x;
-            bomb[i].size = block_size;
-
-            if (buttonGetPressed(3))
-            {
-              bomb[i].color = red;
-              bomb[i].speed = block_speed * 3;
-            }
-            else
-            {
-              bomb[i].color = blue;
-              bomb[i].speed = block_speed;
-            }
-            break;
-          }
-        }
-      }
-    }
+    lvglUpdate();
   }
-}
+} 

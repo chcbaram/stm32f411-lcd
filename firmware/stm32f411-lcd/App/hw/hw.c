@@ -5,15 +5,13 @@
 
 bool hwInit(void)
 {
-  // 하드웨어 초기화 함수
-  //
   cliInit();
   ledInit();
   uartInit();
-  buzzerInit();
-  gpioInit();
   buttonInit();
+  buzzerInit();
   adcInit();
+  gpioInit();
   st7789Init();
   lcdInit();
 

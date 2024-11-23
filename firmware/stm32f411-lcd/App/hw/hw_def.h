@@ -7,8 +7,6 @@
 
 
 
-// 하드웨어 정의 추가
-//
 #define _USE_HW_BUZZER
 
 
@@ -24,14 +22,14 @@
 #define      HW_CLI_LINE_HIS_MAX    8
 #define      HW_CLI_LINE_BUF_MAX    64
 
-#define _USE_HW_GPIO
-#define      HW_GPIO_MAX_CH         4
-
 #define _USE_HW_BUTTON
 #define      HW_BUTTON_MAX_CH       7
 
 #define _USE_HW_ADC
 #define      HW_ADC_MAX_CH          2
+
+#define _USE_HW_GPIO
+#define      HW_GPIO_MAX_CH         4
 
 #define _USE_HW_ST7789
 #define      HW_ST7789_WIDTH        320
@@ -41,10 +39,10 @@
 #define      HW_LCD_WIDTH           300
 #define      HW_LCD_HEIGHT          160
 
+#define _USE_HW_LVGL
 
 
-// 공통 사용 함수
-//
+
 #define logPrintf printf
 
 void     delay(uint32_t ms);

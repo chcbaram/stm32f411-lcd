@@ -10,12 +10,13 @@ extern "C" {
 #include "led.h"
 #include "uart.h"
 #include "cli.h"
-#include "buzzer.h"
-#include "gpio.h"
 #include "button.h"
+#include "buzzer.h"
 #include "adc.h"
+#include "gpio.h"
 #include "st7789.h"
 #include "lcd.h"
+#include "lvgl.h"
 
 
 bool hwInit(void);

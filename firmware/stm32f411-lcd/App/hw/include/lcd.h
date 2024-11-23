@@ -109,6 +109,7 @@ void    lcdSetBackLight(uint8_t value);
 uint32_t lcdReadPixel(uint16_t x_pos, uint16_t y_pos);
 void lcdClear(uint32_t rgb_code);
 void lcdClearBuffer(uint32_t rgb_code);
+void *lcdGetFrameBuffer(void);
 
 bool lcdDrawAvailable(void);
 bool lcdRequestDraw(void);

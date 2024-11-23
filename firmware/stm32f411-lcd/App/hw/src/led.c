@@ -5,7 +5,7 @@
 
 
 
-typedef struct
+typedef struct 
 {
   GPIO_TypeDef *port;
   uint16_t      pin;
@@ -14,7 +14,7 @@ typedef struct
 } led_tbl_t;
 
 
-static led_tbl_t led_tbl[LED_MAX_CH] =
+static led_tbl_t led_tbl[LED_MAX_CH] = 
 {
   {GPIOC, GPIO_PIN_13,  GPIO_PIN_RESET, GPIO_PIN_SET},
 };

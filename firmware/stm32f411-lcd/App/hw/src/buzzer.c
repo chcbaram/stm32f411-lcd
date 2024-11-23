@@ -9,7 +9,6 @@ static uint16_t on_time_cnt = 0;
 
 extern TIM_HandleTypeDef htim4;
 
-static void cliBuzzer(cli_args_t *args);
 
 
 
@@ -18,9 +17,6 @@ static void cliBuzzer(cli_args_t *args);
 bool buzzerInit(void)
 {
   bool ret = true;
-
-
-  cliAdd("buzzer", cliBuzzer);
 
   is_init = ret;
   return ret;
@@ -60,29 +56,4 @@ void buzzerOff(void)
 {
   HAL_TIM_OC_Stop(&htim4, TIM_CHANNEL_1);
   is_on = false;
-}
-
-void cliBuzzer(cli_args_t *args)
-{
-  bool ret = false;
-
-
-  if (args->argc == 3 && args->isStr(0, "on") == true)
-  {
-    uint32_t freq;
-    uint32_t on_time;
-
-    freq = args->getData(1);
-    on_time = args->getData(2);
-
-    buzzerOn(freq, on_time);
-
-    ret = true;
-  }
-
-
-  if (ret != true)
-  {
-    cliPrintf("buzzer on [freq] [ms]\n");
-  }
 }

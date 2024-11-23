@@ -57,7 +57,7 @@ bool lcdInit(void)
 
 
   memset(frame_buffer[0], 0x00, LCD_WIDTH * LCD_HEIGHT * sizeof(uint16_t));
-
+  
   lcdSetBackLight(100);
 
   draw_buf = frame_buffer[draw_idx];
@@ -77,6 +77,11 @@ bool lcdInit(void)
 bool lcdIsInit(void)
 {
   return is_init;
+}
+
+void *lcdGetFrameBuffer(void)
+{
+  return (void *)frame_buffer[0];
 }
 
 void lcdReset(void)
@@ -799,7 +804,7 @@ image_t lcdCreateImage(lvgl_img_t *p_lvgl, int16_t x, int16_t y, int16_t w, int1
   if (p_lvgl->header.cf == LV_IMG_CF_INDEXED_8BIT)
   {
     const uint8_t *p_buf = p_lvgl->data;
-
+    
     for (int i=0; i<256; i++)
     {
       uint8_t r, g, b;
@@ -833,7 +838,7 @@ bool lcdSpriteCreate(sprite_t *p_sprite)
   if (p_param->p_img->header.cf == LV_IMG_CF_INDEXED_8BIT)
   {
     const uint8_t *p_buf = p_param->p_img->data;
-
+    
     for (int i=0; i<256; i++)
     {
       uint8_t r, g, b;
@@ -882,7 +887,7 @@ void lcdSpriteDrawWrap(sprite_t *p_sprite, int16_t x, int16_t y, bool reset)
 LCD_OPT_DEF void lcdDrawImageIndex8Bit(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
 {
   int32_t o_x;
-  int32_t o_y;
+  int32_t o_y;  
   int16_t o_w;
   int16_t o_h;
   const uint8_t *p_data;
@@ -917,13 +922,13 @@ LCD_OPT_DEF void lcdDrawImageIndex8Bit(image_t *p_img, int16_t start_x, int16_t 
         lcdDrawPixel(draw_x+xi, draw_y+yi, pixel);
       }
     }
-  }
+  }  
 }
 
 LCD_OPT_DEF void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
 {
   int32_t o_x;
-  int32_t o_y;
+  int32_t o_y;  
   int16_t o_w;
   int16_t o_h;
   const uint16_t *p_data;
@@ -958,7 +963,7 @@ LCD_OPT_DEF void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t 
         lcdDrawPixel(draw_x+xi, draw_y+yi, pixel);
       }
     }
-  }
+  }  
 }
 
 LCD_OPT_DEF void lcdDrawImageOffset(image_t *p_img, int16_t offset_x, int16_t offset_y, int16_t draw_x, int16_t draw_y)

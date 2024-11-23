@@ -21,9 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 #include "ap.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -317,7 +315,7 @@ static void MX_TIM4_Init(void)
   }
   sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
   sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_OC_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
@@ -374,12 +372,6 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* DMA2_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
-  /* DMA2_Stream2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
   /* DMA2_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
@@ -429,14 +421,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB0 PB1 PB10 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */

@@ -46,7 +46,7 @@ static uart_tbl_t uart_tbl[UART_MAX_CH];
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 
-static const uart_hw_t uart_hw_tbl[UART_MAX_CH] =
+static const uart_hw_t uart_hw_tbl[UART_MAX_CH] = 
   {
     {"USART1 SWD   ", USART1, &huart1, &hdma_usart1_rx, NULL, false},
   };
@@ -62,7 +62,7 @@ bool uartInit(void)
     uart_tbl[i].is_open = false;
     uart_tbl[i].baud = 57600;
     uart_tbl[i].rx_cnt = 0;
-    uart_tbl[i].tx_cnt = 0;
+    uart_tbl[i].tx_cnt = 0;    
   }
 
   is_init = true;
@@ -101,7 +101,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 
       uart_tbl[ch].p_huart   = uart_hw_tbl[ch].p_huart;
       uart_tbl[ch].p_hdma_rx = uart_hw_tbl[ch].p_hdma_rx;
-      uart_tbl[ch].p_huart->Instance = uart_hw_tbl[ch].p_uart;
+      uart_tbl[ch].p_huart->Instance = uart_hw_tbl[ch].p_uart;    
 
       uart_tbl[ch].p_huart->Init.BaudRate       = baud;
       uart_tbl[ch].p_huart->Init.WordLength     = UART_WORDLENGTH_8B;
@@ -138,7 +138,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       uart_tbl[ch].baud    = baud;
       uart_tbl[ch].is_open = true;
       ret = true;
-      break;
+      break;      
   }
 
   return ret;
@@ -162,7 +162,7 @@ uint32_t uartAvailable(uint8_t ch)
   {
     case _DEF_UART1:
       uart_tbl[ch].qbuffer.in = (uart_tbl[ch].qbuffer.len - ((DMA_Stream_TypeDef *)uart_tbl[ch].p_hdma_rx->Instance)->NDTR);
-      ret = qbufferAvailable(&uart_tbl[ch].qbuffer);
+      ret = qbufferAvailable(&uart_tbl[ch].qbuffer);      
       break;
   }
 
@@ -202,7 +202,7 @@ uint8_t uartRead(uint8_t ch)
       #ifdef _USE_HW_USB
       ret = cdcRead();
       #endif
-      break;
+      break;      
   }
   uart_tbl[ch].rx_cnt++;
 
@@ -227,7 +227,7 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
       #ifdef _USE_HW_USB
       ret = cdcWrite(p_data, length);
       #endif
-      break;
+      break;      
   }
   uart_tbl[ch].tx_cnt += ret;
 
@@ -260,7 +260,7 @@ uint32_t uartGetBaud(uint8_t ch)
   if (ch >= UART_MAX_CH) return 0;
 
   ret = uart_tbl[ch].baud;
-
+  
   return ret;
 }
 
