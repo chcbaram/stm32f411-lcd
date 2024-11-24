@@ -801,7 +801,7 @@ image_t lcdCreateImage(lvgl_img_t *p_lvgl, int16_t x, int16_t y, int16_t w, int1
 
   ret.p_img = p_lvgl;
 
-  if (p_lvgl->header.cf == LV_IMG_CF_INDEXED_8BIT)
+  if (p_lvgl->header.cf == LV_COLOR_FORMAT_I8)
   {
     const uint8_t *p_buf = p_lvgl->data;
     
@@ -835,7 +835,7 @@ bool lcdSpriteCreate(sprite_t *p_sprite)
   p_sprite->pre_time = millis();
   p_sprite->cur_index = 0;
 
-  if (p_param->p_img->header.cf == LV_IMG_CF_INDEXED_8BIT)
+  if (p_param->p_img->header.cf == LV_COLOR_FORMAT_I8)
   {
     const uint8_t *p_buf = p_param->p_img->data;
     
@@ -884,7 +884,7 @@ void lcdSpriteDrawWrap(sprite_t *p_sprite, int16_t x, int16_t y, bool reset)
   lcdSpriteDraw(p_sprite, x, y, p_sprite->cur_index);
 }
 
-LCD_OPT_DEF void lcdDrawImageIndex8Bit(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
+void lcdDrawImageIndex8Bit(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
 {
   int32_t o_x;
   int32_t o_y;  
@@ -925,7 +925,7 @@ LCD_OPT_DEF void lcdDrawImageIndex8Bit(image_t *p_img, int16_t start_x, int16_t 
   }  
 }
 
-LCD_OPT_DEF void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
+void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t start_y, int16_t draw_x, int16_t draw_y)
 {
   int32_t o_x;
   int32_t o_y;  
@@ -958,7 +958,8 @@ LCD_OPT_DEF void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t 
       if (o_x >= p_img->p_img->header.w) break;
 
       pixel = p_data[o_y + o_x];
-      if (pixel != green)
+      // if (pixel != green)
+      if (pixel != black)
       {
         lcdDrawPixel(draw_x+xi, draw_y+yi, pixel);
       }
@@ -966,21 +967,21 @@ LCD_OPT_DEF void lcdDrawImageTrueColor(image_t *p_img, int16_t start_x, int16_t 
   }  
 }
 
-LCD_OPT_DEF void lcdDrawImageOffset(image_t *p_img, int16_t offset_x, int16_t offset_y, int16_t draw_x, int16_t draw_y)
+void lcdDrawImageOffset(image_t *p_img, int16_t offset_x, int16_t offset_y, int16_t draw_x, int16_t draw_y)
 {
   switch(p_img->p_img->header.cf)
   {
-    case LV_IMG_CF_TRUE_COLOR:
+    case LV_COLOR_FORMAT_RGB565:
       lcdDrawImageTrueColor(p_img, offset_x, offset_y, draw_x, draw_y);
       break;
 
-    case LV_IMG_CF_INDEXED_8BIT:
+    case LV_COLOR_FORMAT_I8:
       lcdDrawImageIndex8Bit(p_img, offset_x, offset_y, draw_x, draw_y);
       break;
   }
 }
 
-LCD_OPT_DEF void lcdDrawImage(image_t *p_img, int16_t draw_x, int16_t draw_y)
+void lcdDrawImage(image_t *p_img, int16_t draw_x, int16_t draw_y)
 {
   lcdDrawImageOffset(p_img, 0, 0, draw_x, draw_y);
 }

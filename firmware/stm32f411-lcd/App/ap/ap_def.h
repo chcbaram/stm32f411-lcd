@@ -6,4 +6,12 @@
 
 
 
+
+typedef struct
+{
+  char name[32];
+  void (*init)(void);
+  void (*run_func)(void);
+} app_info_t;
+
 #endif

@@ -36,6 +36,7 @@
 #define      HW_ST7789_HEIGHT       170
 
 #define _USE_HW_LCD
+#define      HW_LCD_LVGL            1
 #define      HW_LCD_WIDTH           300
 #define      HW_LCD_HEIGHT          160
 

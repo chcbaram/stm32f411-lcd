@@ -4,35 +4,16 @@
 #include "lv_port_indev.h"
 #include "lcd.h"
 #include "button.h"
-
-/*********************
- *      DEFINES
- *********************/
-
-/**********************
- *      TYPEDEFS
- **********************/
-
-/**********************
- *  STATIC PROTOTYPES
- **********************/
-
-static int8_t button_get_pressed_id(void);
-static void button_read(lv_indev_t * indev, lv_indev_data_t * data);
-
-/**********************
- *  STATIC VARIABLES
- **********************/
-lv_indev_t * indev_button;
+#include "adc.h"
 
 
-/**********************
- *      MACROS
- **********************/
+static void keypad_init(void);
+static void keypad_read(lv_indev_t * indev, lv_indev_data_t * data);
+static uint32_t keypad_get_key(void);
 
-/**********************
- *   GLOBAL FUNCTIONS
- **********************/
+
+lv_indev_t * indev_keypad;
+
 
 void lv_port_indev_init(void)
 {
@@ -41,64 +22,81 @@ void lv_port_indev_init(void)
    * Keypad
    * -----------------*/
 
-  /*Register a button input device*/
-  indev_button = lv_indev_create();
-  lv_indev_set_type(indev_button, LV_INDEV_TYPE_BUTTON);
-  lv_indev_set_read_cb(indev_button, button_read);
+  /*Initialize your keypad or keyboard if you have*/
+  keypad_init();
 
-  /*Assign buttons to points on the screen*/
-  static const lv_point_t btn_points[1] = {
-      {LCD_WIDTH/2, LCD_HEIGHT/2},
-  };
-  lv_indev_set_button_points(indev_button, btn_points);
+  /*Register a keypad input device*/
+  indev_keypad = lv_indev_create();
+  lv_indev_set_type(indev_keypad, LV_INDEV_TYPE_KEYPAD);
+  lv_indev_set_read_cb(indev_keypad, keypad_read);
 }
-
-/**********************
- *   STATIC FUNCTIONS
- **********************/
-
 
 /*------------------
- * Button
+ * Keypad
  * -----------------*/
 
-
-/*Will be called by the library to read the button*/
-static void button_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
+static void keypad_init(void)
 {
-  static uint8_t last_btn = 0;
-
-  /*Get the pressed button's ID*/
-  int8_t btn_act = button_get_pressed_id();
-
-  if(btn_act >= 0) {
-      data->state = LV_INDEV_STATE_PRESSED;
-      last_btn = 0;
-      logPrintf("pressed\n");
-  }
-  else {
-      data->state = LV_INDEV_STATE_RELEASED;
-  }
-
-  /*Save the last pressed button's ID*/
-  data->btn_id = last_btn;
 }
 
-/*Get ID  (0, 1, 2 ..) of the pressed button*/
-static int8_t button_get_pressed_id(void)
+enum
 {
-  uint8_t i;
+  KEY_NONE,
+  KEY_LEFT,
+  KEY_RIGHT,
+  KEY_ENTER,
+};
 
-  /*Check to buttons see which is being pressed (assume there are 2 buttons)*/
-  for(i = 0; i < BUTTON_MAX_CH; i++)
+
+static void keypad_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
+{
+  static uint32_t last_key = 0;
+
+
+  uint32_t act_key = keypad_get_key();
+  if (act_key > 0)
   {
-    /*Return the pressed button's ID*/
-    if(buttonGetPressed(i))
+    data->state = LV_INDEV_STATE_PRESSED;
+
+    switch (act_key)
     {
-      return i;
+    case KEY_LEFT:
+      act_key = LV_KEY_PREV;
+      break;
+    case KEY_RIGHT:
+      act_key = LV_KEY_NEXT;
+      break;
+    case KEY_ENTER:
+      act_key = LV_KEY_ENTER;
+      break;
     }
+    last_key = act_key;
+  }
+  else
+  {
+    data->state = LV_INDEV_STATE_RELEASED;
   }
 
-  /*No button pressed*/
-  return -1;
+  data->key = last_key;
+}
+
+/*Get the currently being pressed key.  0 if no key is pressed*/
+static uint32_t keypad_get_key(void)
+{
+  uint32_t ret = KEY_NONE;
+  
+  if (adcRead(_DEF_CH1) >= 3000)
+  {
+    ret = KEY_RIGHT;
+  }
+  if (adcRead(_DEF_CH1) <= 1000)
+  {
+    ret = KEY_LEFT;
+  }
+  if (buttonGetPressed(2))
+  {
+    ret = KEY_ENTER;
+  }
+
+  return ret;
 }
