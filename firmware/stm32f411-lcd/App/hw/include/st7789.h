@@ -46,6 +46,7 @@ bool st7789IsReady(void);
 void st7789GetInfo(st7789_info_t *p_info);
 void st7789SetWindow(int32_t x, int32_t y, int32_t w, int32_t h);
 bool st7789SendBuffer(uint8_t *p_data, uint32_t length, uint32_t timeout_ms);
+void st7789SetCallback(void (*callback_func)(void));
 
 uint16_t st7789GetWidth(void);
 uint16_t st7789GetHeight(void);

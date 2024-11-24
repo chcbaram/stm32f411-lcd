@@ -1,5 +1,7 @@
 #include "lv_port_disp.h"
 #include "lcd.h"
+#include "st7789.h"
+
 
 /*********************
  *      DEFINES
@@ -22,6 +24,7 @@ static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px
 /**********************
  *  STATIC VARIABLES
  **********************/
+lv_display_t * disp;
 
 /**********************
  *      MACROS
@@ -30,6 +33,11 @@ static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
+
+void lv_port_callback(void)
+{
+  lv_display_flush_ready(disp);
+}
 
 void lv_port_disp_init(void)
 {
@@ -41,11 +49,12 @@ void lv_port_disp_init(void)
   /*------------------------------------
    * Create a display and set a flush_cb
    * -----------------------------------*/
-  lv_display_t * disp = lv_display_create(LCD_WIDTH, LCD_HEIGHT);
+  disp = lv_display_create(LCD_WIDTH, LCD_HEIGHT);
   lv_display_set_flush_cb(disp, disp_flush);
 
 
   lv_display_set_buffers(disp, lcdGetFrameBuffer(), NULL, LCD_WIDTH*LCD_HEIGHT*2, LV_DISPLAY_RENDER_MODE_DIRECT);
+  st7789SetCallback(lv_port_callback);
 }
 
 /**********************
@@ -84,15 +93,7 @@ static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, uint8_t 
   {
     if (lcdDrawAvailable())
     {
-      lcdUpdateDraw();
-    }
-    else
-    {
-      return;
+      lcdRequestDraw();
     }
   }
-
-  /*IMPORTANT!!!
-   *Inform the graphics library that you are ready with the flushing*/
-  lv_display_flush_ready(disp_drv);
 }

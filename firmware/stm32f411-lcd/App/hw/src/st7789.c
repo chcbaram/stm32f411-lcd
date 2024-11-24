@@ -43,7 +43,7 @@ static const int32_t _width  = HW_ST7789_WIDTH;
 static const int32_t _height = HW_ST7789_HEIGHT;
 static const uint32_t colstart = 0;
 static const uint32_t rowstart = 35;
-
+static void (*transfer_callback)(void) = NULL;
 
 
 #ifdef _USE_HW_CLI
@@ -81,8 +81,17 @@ void st7789DoneISR(SPI_HandleTypeDef *hspi)
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   LL_SPI_SetDataWidth(hspi1.Instance, LL_SPI_DATAWIDTH_8BIT);
 
+  if (transfer_callback != NULL)
+  {
+    transfer_callback();
+  }
   exe_time_req = millis()-pre_time_req;
   is_ready = true;
+}
+
+void st7789SetCallback(void (*callback_func)(void))
+{
+  transfer_callback = callback_func;
 }
 
 bool st7789IsReady(void)
