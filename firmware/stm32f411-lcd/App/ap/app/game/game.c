@@ -61,6 +61,7 @@ void appMain(void)
   img_bomb = lcdCreateImage(&bomb, 0, 0, 0, 0);
 
 
+  pre_time_buzzer = millis();
   while(1)
   {
     if (buttonGetPressed(0))
