@@ -19,7 +19,7 @@ static bool is_req_run = false;
 static uint8_t req_run_id = 0;
 static lv_obj_t *main_disp = NULL;
 
-
+LV_FONT_DECLARE(neo);
 
 
 
@@ -70,6 +70,7 @@ void uiInit(void)
   lv_obj_set_scrollbar_mode(main_disp, LV_SCROLLBAR_MODE_OFF);
   lv_obj_set_scroll_dir(main_disp, LV_DIR_HOR);
 
+  lv_obj_set_style_text_font(main_disp, &neo, LV_PART_MAIN);
 
   lv_group_t * g = lv_group_create();
 
@@ -84,6 +85,7 @@ void uiInit(void)
     lv_group_add_obj(g, btn);
 
     lv_obj_add_event_cb(btn, uiEvent, LV_EVENT_CLICKED, (void *)i);
+    // lv_obj_set_style_text_font(label, &neo, LV_PART_MAIN);    
   }
   lv_indev_set_group(indev_keypad, g);
 

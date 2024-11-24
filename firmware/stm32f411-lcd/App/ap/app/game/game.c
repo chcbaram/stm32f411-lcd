@@ -5,7 +5,7 @@ static void appInit(void);
 static void appMain(void);
 
 static app_info_t app_info = {
-    .name = "GAME",
+    .name = "게임",
     .init = appInit,
     .run_func = appMain,
 };
